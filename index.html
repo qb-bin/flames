@@ -17,8 +17,12 @@
         <button onclick="calculateFlames()" aria-label="Calculate Flames">Calculate Flames</button>
         <div id="result"></div>
         <div id="loading" style="display: none;">Loading...</div>
+        <div id="history"></div>
     </div>
     <script>
+        const flames = ["Friends", "Love", "Affection", "Marriage", "Enemy", "Soulmate"];
+        let history = [];
+
         function calculateFlames() {
             const name1 = document.getElementById("name1").value.toLowerCase();
             const name2 = document.getElementById("name2").value.toLowerCase();
@@ -45,14 +49,16 @@
             }
 
             // Calculate Flames result
-            const flames = ["Friends", "Love", "Affection", "Marriage", "Enemy", "Soulmate"];
             let index = combinedName.length % flames.length;
             if (index === 0) {
                 index = 5; // Ensure index is always within the valid range
             }
 
-            // Display result and hide loading indicator
-            document.getElementById("result").innerHTML = "Flames result: " + flames[index];
+            // Display result, update history, and hide loading indicator
+            const result = `Flames result: ${flames[index]}`;
+            document.getElementById("result").innerHTML = result;
+            history.push(result);
+            document.getElementById("history").innerHTML = `History: ${history.join(", ")}`;
             document.getElementById("loading").style.display = "none";
         }
     </script>
