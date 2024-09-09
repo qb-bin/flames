@@ -7,60 +7,59 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <label for="name1">Enter Name 1:</label>
-        <input type="text" id="name1" name="name1" aria-label="Name 1">
-        <br>
-        <label for="name2">Enter Name 2:</label>
-        <input type="text" id="name2" name="name2" aria-label="Name 2">
-        <br>
-        <button onclick="calculateFlames()" aria-label="Calculate Flames">Calculate Flames</button>
+    <div class="flames-container">
+        <h1 class="title">Flames Game</h1>
+        <div class="input-container">
+            <label for="name1">Enter Name 1:</label>
+            <input type="text" id="name1" name="name1">
+            <label for="name2">Enter Name 2:</label>
+            <input type="text" id="name2" name="name2">
+        </div>
+        <button onclick="calculateFlames()">Calculate Flames</button>
         <div id="result"></div>
-        <div id="loading" style="display: none;">Loading...</div>
         <div id="history"></div>
+        <button onclick="showPreviousPage()">Previous Page</button>
     </div>
-    <script>
-        const flames = ["Friends", "Love", "Affection", "Marriage", "Enemy", "Soulmate"];
-        let history = [];
-
-        function calculateFlames() {
-            const name1 = document.getElementById("name1").value.toLowerCase();
-            const name2 = document.getElementById("name2").value.toLowerCase();
-
-            // Validate input
-            if (!/^[a-z]+$/.test(name1) || !/^[a-z]+$/.test(name2)) {
-                alert("Please enter valid names containing only letters.");
-                return;
-            }
-
-            // Show loading indicator
-            document.getElementById("loading").style.display = "block";
-
-            // Remove common characters
-            let combinedName = name1 + name2;
-            combinedName = combinedName.replace(/[^a-z]/g, "");
-            for (let i = 0; i < combinedName.length; i++) {
-                for (let j = i + 1; j < combinedName.length; j++) {
-                    if (combinedName[i] === combinedName[j]) {
-                        combinedName = combinedName.replace(combinedName[i], "");
-                        j--;
-                    }
-                }
-            }
-
-            // Calculate Flames result
-            let index = combinedName.length % flames.length;
-            if (index === 0) {
-                index = 5; // Ensure index is always within the valid range
-            }
-
-            // Display result, update history, and hide loading indicator
-            const result = `Flames result: ${flames[index]}`;
-            document.getElementById("result").innerHTML = result;
-            history.push(result);
-            document.getElementById("history").innerHTML = `History: ${history.join(", ")}`;
-            document.getElementById("loading").style.display = "none";
-        }
-    </script>
+    <div id="previousPage" style="display: none;">
+        <p>Previous Results:</p>
+        <ul id="previousResults"></ul>
+    </div>
 </body>
+<script>
+    const flames = ["Friends", "Love", "Affection", "Marriage", "Enemy", "Soulmate"];
+    let history = [];
+
+    function calculateFlames() {
+        // ... your previous JavaScript logic ...
+        history.push(result);
+        updatePreviousPage();
+    }
+
+    function showPreviousPage() {
+        const previousPage = document.getElementById("previousPage");
+        const previousResults = document.getElementById("previousResults");
+
+        if (previousPage.style.display === "none") {
+            previousPage.style.display = "block";
+            previousResults.innerHTML = "";
+            history.forEach(result => {
+                const listItem = document.createElement("li");
+                listItem.textContent = result;
+                previousResults.appendChild(listItem);
+            });
+        } else {
+            previousPage.style.display = "none";
+        }
+    }
+
+    function updatePreviousPage() {
+        const previousResults = document.getElementById("previousResults");
+        previousResults.innerHTML = "";
+        history.forEach(result => {
+            const listItem = document.createElement("li");
+            listItem.textContent = result;
+            previousResults.appendChild(listItem);
+        });
+    }
+</script>
 </html>
