@@ -3,87 +3,85 @@
 <head>
     <title>Flames Game</title>
     <style>
-        /* ... your CSS styles ... */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 200px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="flames-container">
-        <h1 class="title">Flames Game</h1>
-        <div class="input-container">
-            <label for="name1">Enter Name 1:</label>
-            <input type="text" id="name1" name="name1">
-            <label for="name2">Enter Name 2:</label>
-            <input type="text" id="name2" name="name2">
-        </div>
+    <div class="container">
+        <h1>Flames Game</h1>
+        <label for="name1">Enter Name 1:</label>
+        <input type="text" id="name1" name="name1">
+        <br><br>
+        <label for="name2">Enter Name 2:</label>
+        <input type="text" id="name2" name="name2">
+        <br><br>
         <button onclick="calculateFlames()">Calculate Flames</button>
+        <br><br>
         <div id="result"></div>
-        <div id="history"></div>
-        <button onclick="showPreviousPage()">Previous Page</button>
     </div>
-    <div id="previousPage" style="display: none;">
-        <p>Previous Results:</p>
-        <ul id="previousResults"></ul>
-        <button onclick="hidePreviousPage()">Back</button>
-    </div>
-</body>
-<script>
-    const flames = ["Friends", "Love", "Affection", "Marriage", "Enemy", "Soulmate"];
-    let history = [];
+    <script>
+        function calculateFlames() {
+            var name1 = document.getElementById("name1").value;
+            var name2 = document.getElementById("name2").value;
 
-    function calculateFlames() {
-        const name1 = document.getElementById("name1").value.toLowerCase();
-        const name2 = document.getElementById("name2").value.toLowerCase();
-
-        // Validate input
-        if (!/^[a-z]+$/.test(name1) || !/^[a-z]+$/.test(name2)) {
-            alert("Please enter valid names containing only letters.");
-            return;
-        }
-
-        // Show loading indicator
-        document.getElementById("loading").style.display = "block";
-
-        // Remove common characters
-        let combinedName = name1 + name2;
-        combinedName = combinedName.replace(/[^a-z]/g, "");
-        for (let i = 0; i < combinedName.length; i++) {
-            for (let j = i + 1; j < combinedName.length; j++) {
-                if (combinedName[i] === combinedName[j]) {
-                    combinedName = combinedName.replace(combinedName[i], "");
-                    j--;
+            // Remove common characters
+            var commonChars = "";
+            for (var i = 0; i < name1.length; i++) {
+                if (name2.indexOf(name1[i]) !== -1) {
+                    commonChars += name1[i];
+                    name1 = name1.replace(name1[i], "");
+                    name2 = name2.replace(name2[i], "");
+                    i--;
                 }
             }
+
+            // Calculate Flames
+            var flames = "FLAMES";
+            var count = name1.length + name2.length + commonChars.length;
+            var index = count % 6;
+
+            // Remove letters based on index
+            flames = flames.substring(index) + flames.substring(0, index);
+
+            // Display result
+            document.getElementById("result").innerHTML = "Flames result: " + flames.charAt(0);
         }
-
-        // Calculate Flames result
-        let index = combinedName.length % flames.length;
-        if (index === 0) {
-            index = 5; // Ensure index is always within the valid range
-        }
-
-        // Display result, update history, and hide loading indicator
-        const result = `Flames result: ${flames[index]}`;
-        document.getElementById("result").innerHTML = result;
-        history.push(result);
-        updatePreviousPage();
-        document.getElementById("loading").style.display = "none";
-    }
-
-    function showPreviousPage() {
-        const previousPage = document.getElementById("previousPage");
-        const previousResults = document.getElementById("previousResults");
-        previousResults.innerHTML = "";
-        history.slice(-5).forEach(result => { // Show only the last 5 results
-            const listItem = document.createElement("li");
-            listItem.textContent = result;
-            previousResults.appendChild(listItem);
-        });
-        previousPage.style.display = "block";
-    }
-
-    function hidePreviousPage() {
-        document.getElementById("previousPage").style.display = "none";
-    }
-</script>
+    </script>
 </body>
 </html>
