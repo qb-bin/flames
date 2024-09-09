@@ -23,6 +23,7 @@
     <div id="previousPage" style="display: none;">
         <p>Previous Results:</p>
         <ul id="previousResults"></ul>
+        <button onclick="hidePreviousPage()">Back</button>
     </div>
 </body>
 <script>
@@ -30,36 +31,59 @@
     let history = [];
 
     function calculateFlames() {
-        // ... your previous JavaScript logic ...
+        const name1 = document.getElementById("name1").value.toLowerCase();
+        const name2 = document.getElementById("name2").value.toLowerCase();
+
+        // Validate input
+        if (!/^[a-z]+$/.test(name1) || !/^[a-z]+$/.test(name2)) {
+            alert("Please enter valid names containing only letters.");
+            return;
+        }
+
+        // Show loading indicator
+        document.getElementById("loading").style.display = "block";
+
+        // Remove common characters
+        let combinedName = name1 + name2;
+        combinedName = combinedName.replace(/[^a-z]/g, "");
+        for (let i = 0; i < combinedName.length; i++) {
+            for (let j = i + 1; j < combinedName.length; j++) {
+                if (combinedName[i] === combinedName[j]) {
+                    combinedName = combinedName.replace(combinedName[i], "");
+                    j--;
+                }
+            }
+        }
+
+        // Calculate Flames result
+        let index = combinedName.length % flames.length;
+        if (index === 0) {
+            index = 5; // Ensure index is always within the valid range
+        }
+
+        // Display result, update history, and hide loading indicator
+        const result = `Flames result: ${flames[index]}`;
+        document.getElementById("result").innerHTML = result;
         history.push(result);
         updatePreviousPage();
+        document.getElementById("loading").style.display = "none";
     }
 
     function showPreviousPage() {
         const previousPage = document.getElementById("previousPage");
         const previousResults = document.getElementById("previousResults");
-
-        if (previousPage.style.display === "none") {
-            previousPage.style.display = "block";
-            previousResults.innerHTML = "";
-            history.forEach(result => {
-                const listItem = document.createElement("li");
-                listItem.textContent = result;
-                previousResults.appendChild(listItem);
-            });
-        } else {
-            previousPage.style.display = "none";
-        }
-    }
-
-    function updatePreviousPage() {
-        const previousResults = document.getElementById("previousResults");
         previousResults.innerHTML = "";
-        history.forEach(result => {
+        history.slice(-5).forEach(result => { // Show only the last 5 results
             const listItem = document.createElement("li");
             listItem.textContent = result;
             previousResults.appendChild(listItem);
         });
+        previousPage.style.display = "block";
+    }
+
+    function hidePreviousPage() {
+        document.getElementById("previousPage").style.display = "none";
     }
 </script>
+</body>
 </html>
