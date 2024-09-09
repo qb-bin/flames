@@ -1,86 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAMES Game</title>
+    <title>Flames Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            text-align: center;
         }
-        input, button {
-            margin: 10px 0;
+
+        .container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 200px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0069d9;
+        }
+
+        #result {
+            font-size: 18px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>FLAMES Game</h1>
-    <p>Enter two names to determine their relationship:</p>
-    
-    <input type="text" id="name1" placeholder="Enter first name">
-    <input type="text" id="name2" placeholder="Enter second name">
-    <button onclick="calculateFLAMES()">Calculate</button>
-    
-    <p id="result"></p>
-
+    <div class="container">
+        <label for="name1">Enter Name 1:</label>
+        <input type="text" id="name1" name="name1">
+        <br>
+        <label for="name2">Enter Name 2:</label>
+        <input type="text" id="name2" name="name2">
+        <br>
+        <button onclick="calculateFlames()">Calculate Flames</button>
+        <div id="result"></div>
+    </div>
     <script>
-        function calculateFLAMES() {
-            // Get the names from input fields
-            const name1 = document.getElementById('name1').value.trim().toLowerCase();
-            const name2 = document.getElementById('name2').value.trim().toLowerCase();
-            
-            if (!name1 || !name2) {
-                document.getElementById('result').innerText = "Please enter both names.";
+        function calculateFlames() {
+            const name1 = document.getElementById("name1").value.toLowerCase();
+            const name2 = document.getElementById("name2").value.toLowerCase();
+
+            // Validate input
+            if (name1 === "" || name2 === "") {
+                alert("Please enter both names.");
                 return;
             }
 
-            // Remove common letters
-            const remainingLetters = removeCommonLetters(name1, name2);
-
-            // Calculate the result
-            const flamesResult = flamesGame(remainingLetters.length);
-            
-            // Display the result
-            document.getElementById('result').innerText = `The result is: ${flamesResult}`;
-        }
-
-        function removeCommonLetters(name1, name2) {
-            let letters = name1 + name2;
-            let counts = {};
-            
-            for (let letter of letters) {
-                if (letter.match(/[a-z]/)) {
-                    counts[letter] = (counts[letter] || 0) + 1;
+            // Remove common characters and non-alphabetic characters
+            let combinedName = name1 + name2;
+            combinedName = combinedName.replace(/[^a-z]/g, "");
+            for (let i = 0; i < combinedName.length; i++) {
+                for (let j = i + 1; j < combinedName.length; j++) {
+                    if (combinedName[i] === combinedName[j]) {
+                        combinedName = combinedName.replace(combinedName[i], "");
+                        j--;
+                    }
                 }
             }
-            
-            for (let letter of name1) {
-                if (letter.match(/[a-z]/)) {
-                    counts[letter]--;
-                }
-            }
-            
-            let remaining = 0;
-            for (let letter in counts) {
-                if (counts[letter] > 0) {
-                    remaining += counts[letter];
-                }
-            }
-            
-            return remaining;
-        }
 
-        function flamesGame(count) {
-            const flames = ["Friends", "Lovers", "Affectionate", "Marriage", "Enemies", "Siblings"];
-            let index = 0;
-            
-            while (flames.length > 1) {
-                index = (index + count - 1) % flames.length;
-                flames.splice(index, 1);
-            }
-            
-            return flames[0];
+            // Calculate Flames result
+            const flames = ["Friends", "Love", "Affection", "Marriage", "Enemy", "Soulmate"];
+            let index = combinedName.length % flames.length;
+
+            // Display result
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "Flames result: " + flames[index];
         }
     </script>
 </body>
