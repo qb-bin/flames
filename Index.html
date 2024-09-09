@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAMES Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>FLAMES Game</h1>
+    <p>Enter two names to determine their relationship:</p>
+    
+    <input type="text" id="name1" placeholder="Enter first name">
+    <input type="text" id="name2" placeholder="Enter second name">
+    <button onclick="calculateFLAMES()">Calculate</button>
+    
+    <p id="result"></p>
+
+    <script>
+        function calculateFLAMES() {
+            // Get the names from input fields
+            const name1 = document.getElementById('name1').value.trim().toLowerCase();
+            const name2 = document.getElementById('name2').value.trim().toLowerCase();
+            
+            if (!name1 || !name2) {
+                document.getElementById('result').innerText = "Please enter both names.";
+                return;
+            }
+
+            // Remove common letters
+            const remainingLetters = removeCommonLetters(name1, name2);
+
+            // Calculate the result
+            const flamesResult = flamesGame(remainingLetters.length);
+            
+            // Display the result
+            document.getElementById('result').innerText = `The result is: ${flamesResult}`;
+        }
+
+        function removeCommonLetters(name1, name2) {
+            let letters = name1 + name2;
+            let counts = {};
+            
+            for (let letter of letters) {
+                if (letter.match(/[a-z]/)) {
+                    counts[letter] = (counts[letter] || 0) + 1;
+                }
+            }
+            
+            for (let letter of name1) {
+                if (letter.match(/[a-z]/)) {
+                    counts[letter]--;
+                }
+            }
+            
+            let remaining = 0;
+            for (let letter in counts) {
+                if (counts[letter] > 0) {
+                    remaining += counts[letter];
+                }
+            }
+            
+            return remaining;
+        }
+
+        function flamesGame(count) {
+            const flames = ["Friends", "Lovers", "Affectionate", "Marriage", "Enemies", "Siblings"];
+            let index = 0;
+            
+            while (flames.length > 1) {
+                index = (index + count - 1) % flames.length;
+                flames.splice(index, 1);
+            }
+            
+            return flames[0];
+        }
+    </script>
+</body>
+</html>
